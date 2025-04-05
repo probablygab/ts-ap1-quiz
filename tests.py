@@ -116,3 +116,24 @@ def test_set_correct_choices_invalid():
 
     with pytest.raises(Exception):
         question.set_correct_choices([4])
+
+# 2 new tests with fixtures
+@pytest.fixture
+def template_question():
+    q = Question(title='Template Question', points=10, max_selections=3)
+    
+    q.add_choice('A', False)
+    q.add_choice('B', False)
+    q.add_choice('C', True)
+
+    return q
+
+def test_select_correct_choices_fixture(template_question):
+    selected_choices = template_question.select_choices([1, 3])
+    assert selected_choices == [3]
+
+def test_remove_choice_by_id_fixture(template_question):
+    template_question.remove_choice_by_id(2)
+    assert len(template_question.choices) == 2
+    assert template_question.choices[0].text == 'A'
+    assert template_question.choices[1].text == 'C'
